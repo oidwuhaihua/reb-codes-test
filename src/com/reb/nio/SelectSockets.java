@@ -16,8 +16,9 @@ public class SelectSockets {
 
     public static int PORT_NUMBER = 1234 ;
 
-
-
+    public static void main(String[] args) throws IOException {
+        new SelectSockets().go(args);
+    }
 
 
     public void go(String[] argv) throws IOException {
@@ -29,22 +30,32 @@ public class SelectSockets {
         }
 
         System.out.println("Listening on port " + port);
+        //分配未绑定的服务器套接字通道
         // Allocate an unbound server socket channel
         ServerSocketChannel serverChannel = ServerSocketChannel.open();
+
+        //获取关联的ServerSocket与其绑定
         // Get the associated ServerSocket to bind it with
         ServerSocket serverSocket = serverChannel.socket();
+
+        //在下面创建一个新的选择器
         // Create a new Selector for use below
         Selector selector = Selector.open();
 
+        //设置服务器通道 并且监听其端口
         // Set the port the server channel will listen to
         serverSocket.bind(new InetSocketAddress(port));
 
+        //设置socket监听 为非阻塞模式
         // Set nonblocking mode for the listening socket
         serverChannel.configureBlocking(false);
+
+        //使用 Selector 来注册 ServerSocketChannel
         // Register the ServerSocketChannel with the Selector
         serverChannel.register(selector,SelectionKey.OP_ACCEPT);
 
         for (;;){
+            //这可能会阻塞很长时间。 返回时，所选集合包含 就绪 通道的键。
             // This may block for a long time. Upon returning, the
            // selected set contains keys of the ready channels.
             int n = selector.select();
@@ -52,13 +63,16 @@ public class SelectSockets {
             if(n == 0 ){
                 continue; // nothing to do
             }
+            //在所选择的 键集 上获取迭代器
             // Get an iterator over the set of selected keys
             Iterator it = selector.selectedKeys().iterator();
 
+            //查看所选集中的每个键
             // Look at each key in the selected set
             while (it.hasNext()){
                 SelectionKey key = (SelectionKey) it.next();
 
+                //一个新的连接进来了吗？
                 // Is a new connection coming in?
                 if(key.isAcceptable()){
                     ServerSocketChannel server = (ServerSocketChannel)key.channel();
@@ -66,10 +80,12 @@ public class SelectSockets {
                     registerChannel(selector,channel,SelectionKey.OP_READ);
                     sayHello(channel);
                 }
+                //查看  是否有数据
                 // Is there data to read on this channel?
                 if(key.isReadable()){
                     readDataFromSocket(key);
                 }
+                // 从选定的集合中删除密钥; 它已被处理
                 // Remove key from selected set; it's been handled
                 it.remove();
             }
