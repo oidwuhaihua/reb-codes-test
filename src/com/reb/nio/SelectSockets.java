@@ -8,6 +8,8 @@ import java.nio.channels.*;
 import java.util.Iterator;
 
 /**
+ * http://blog.csdn.net/shimiso/article/details/24990499
+ * http://www.infoq.com/cn/news/2014/12/external-memory-heap-memory
  * 使用 select( )  多个通道
  * Created by rebby on 2017/5/8.
  */
