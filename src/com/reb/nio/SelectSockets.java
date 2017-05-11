@@ -10,6 +10,8 @@ import java.util.Iterator;
 /**
  * http://blog.csdn.net/shimiso/article/details/24990499
  * http://www.infoq.com/cn/news/2014/12/external-memory-heap-memory
+ * https://www.oschina.net/news/74939/spark-deploy-combat
+ * http://www.powerxing.com/spark-quick-start-guide/
  * 使用 select( )  多个通道
  * Created by rebby on 2017/5/8.
  */
